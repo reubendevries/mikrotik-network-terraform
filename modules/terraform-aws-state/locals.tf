@@ -2,9 +2,9 @@ data "aws_caller_identity" "current" {}
 resource "time_static" created_at {}
 
 locals {
-	bucket_name = var.bucket_name
+	bucket_name = "mikrotik-network-tf-state-devries-family"
 	
-	dynamodb_table_name = var.dynamodb_table_name
+	dynamodb_table_name = "terraform-state-lock"
 
 	state_bucket_logging = {
   	enabled = true

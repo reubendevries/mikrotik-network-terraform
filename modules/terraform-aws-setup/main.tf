@@ -2,7 +2,7 @@
 
 # creates the terraform_admin user.
 resource "aws_iam_user" "terraform_admin" {
-  name = local.caller_name
+  name = "terraform_admin"
   tags = local.tags
 }
 

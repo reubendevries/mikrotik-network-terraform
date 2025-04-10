@@ -1,4 +1,4 @@
 variable "project" {
-	type = "string"
+	type = string
 	description = "The project name"
 }

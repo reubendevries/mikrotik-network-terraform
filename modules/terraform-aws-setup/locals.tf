@@ -12,7 +12,7 @@ locals {
 		
 		"Project" = "${var.project}"
 		"Owner" = local.caller_name
-		"Created At" = formatdate("YYYY-MM-DD", time_static.created_at.rfc3339)
+		"Created On" = formatdate("DD-MM-YYYY", time_static.created_at.rfc3339)
 		"Managed By" = "Terraform"
 	}
 }

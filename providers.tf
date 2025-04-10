@@ -1,10 +1,10 @@
 terraform {
 	backend "s3" {
-    bucket         = "${var.bucket_name}"
-    key            = "mikrotik/terraform.tfstate"
-    region         = "${var.region}"
-    encrypt        = true
-    dynamodb_table = "${var.dynamodb_table_name}"
+    bucket = "mikrotik-network-tf-state-devries-family"
+    key = "mikrotik/terraform.tfstate"
+    region = "ca-west-1"
+    encrypt = true
+    use_lockfile = true
   }
 
   required_providers {
