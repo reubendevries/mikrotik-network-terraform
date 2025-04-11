@@ -1,8 +1,4 @@
-variable "project" {
-	type = string
-	description = "The project name"
-}
-
+# variables.tf
 variable "aws_region" {
 	type = string
   description = "AWS region"
