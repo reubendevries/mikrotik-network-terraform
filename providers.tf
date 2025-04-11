@@ -22,3 +22,11 @@ terraform {
     }
   }
 }
+
+provider "routeros" {
+  # Provider configuration
+  hosturl  = var.routeros_host
+  username = var.routeros_username
+  password = var.routeros_password
+  insecure = true  # Set to false in production if using valid SSL
+}
