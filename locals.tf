@@ -1,4 +1,5 @@
-# ROOT: locals.tf
+data "aws_caller_identity" "current" {}
+
 locals {
   network_segments = {
     dmz = {

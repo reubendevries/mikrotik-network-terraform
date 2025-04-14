@@ -4,8 +4,8 @@ variable "network_segments" {
   type = map(object({
     vlan_id = number
     network = string
-    wifi_enabled = bool    # Whether this network should be available over WiFi
-    ethernet_only = bool   # Whether this network should be ethernet-only
+    wifi_enabled = bool
+    ethernet_only = bool
   }))
 }
 

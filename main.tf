@@ -9,15 +9,6 @@ module terraform-aws-state {
 	project = var.project
 }
 
-module terraform-routeros-setup {
-	source = "./modules/terraform-routeros-setup"
-	cap_ax_macs = var.cap_ax_macs
-	routeros_host = var.routeros_host
-	routeros_username = var.routeros_username
-	routeros_password = var.routeros_password
-	email_address = var.email_address
-}
-
 module "terraform-routeros-dns" {
   source = "./modules/terraform-routeros-dns"
   
@@ -68,11 +59,11 @@ module "terraform-routeros-wifi" {
   source = "./modules/terraform-routeros-wifi"
   
   network_segments = local.network_segments
-  bridge_name     = module.network.bridge_name
+  bridge_name     = module.terraform-routeros-network.bridge_names
   wifi_passwords  = {
-    home  = data.aws_secretsmanager_secret_version.home_wifi_password.secret_string
-    guest = data.aws_secretsmanager_secret_version.guest_wifi_password.secret_string
-    iot   = data.aws_secretsmanager_secret_version.iot_wifi_password.secret_string
+    home_wifi_password  = data.aws_secretsmanager_secret_version.home_wifi_password.secret_string
+    guest_wifi_password = data.aws_secretsmanager_secret_version.guest_wifi_password.secret_string
+    iot_wifi_password   = data.aws_secretsmanager_secret_version.iot_wifi_password.secret_string
   }
   cap_ax_macs    = var.cap_ax_macs
 }

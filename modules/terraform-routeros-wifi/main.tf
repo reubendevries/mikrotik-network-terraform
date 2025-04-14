@@ -1,5 +1,3 @@
-# modules/wifi/main.tf
-# CAPsMAN base configuration
 resource "routeros_caps_manager" "main" {
   enabled            = true
   upgrade_policy     = "suggest-same-version"
@@ -8,7 +6,6 @@ resource "routeros_caps_manager" "main" {
   lock_to_caps_only = true
 }
 
-# Channel configuration
 resource "routeros_caps_manager_channel" "wifi_channels" {
   name              = "main-channels"
   band              = "2ghz-b/g/n,5ghz-a/n/ac"
@@ -18,12 +15,11 @@ resource "routeros_caps_manager_channel" "wifi_channels" {
   save             = true
 }
 
-# Security configurations
 resource "routeros_caps_manager_security" "wifi_security" {
   for_each = {
-    home  = var.wifi_passwords["home"]
-    guest = var.wifi_passwords["guest"]
-    iot   = var.wifi_passwords["iot"]
+    home_wifi_password  = local.wifi_passwords["home_wifi_password"]
+    guest_wifi_password = local.wifi_passwords["guest_wifi_password"]
+    iot_wifi_password   = local.wifi_passwords["iot_wifi_password"]
   }
   
   name                 = "${each.key}-security"
@@ -33,7 +29,6 @@ resource "routeros_caps_manager_security" "wifi_security" {
   save                = true
 }
 
-# WiFi configurations for allowed networks
 resource "routeros_caps_manager_configuration" "wifi_networks" {
   for_each = local.wifi_networks
   
@@ -50,7 +45,6 @@ resource "routeros_caps_manager_configuration" "wifi_networks" {
   save             = true
 }
 
-# CAP AX device registration
 resource "routeros_caps_manager_access_list" "cap_ax_devices" {
   count            = length(var.cap_ax_macs)
   

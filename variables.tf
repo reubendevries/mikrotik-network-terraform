@@ -39,3 +39,18 @@ variable "email_address" {
 	type = string
 	description = "email address for monitoring alerts"
 }
+
+variable "home_wifi_password" {
+	type = string
+	description = "password for home wifi"
+}
+
+variable "guest_wifi_password" {
+	type = string
+	description = "password for guest wifi"
+}
+
+variable "iot_wifi_password" {
+	type = string
+	description = "password for iot wifi"
+}

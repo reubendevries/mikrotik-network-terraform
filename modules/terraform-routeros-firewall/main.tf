@@ -5,11 +5,10 @@ resource "routeros_ip_firewall_filter" "established" {
   comment          = "Allow established connections"
 }
 
-# DMZ Rules
 resource "routeros_ip_firewall_filter" "dmz_internet" {
   chain         = "forward"
   src_address   = var.network_segments.dmz.network
-  out_interface = "ether1" # WAN interface
+  out_interface = "ether1"
   action        = "accept"
   comment       = "DMZ to Internet"
 }
@@ -24,12 +23,11 @@ resource "routeros_ip_firewall_filter" "dmz_isolation" {
   comment = "Block DMZ access to other networks"
 }
 
-# Management Network Rules
 resource "routeros_ip_firewall_filter" "mgmt_to_devices" {
   chain       = "forward"
   src_address = var.network_segments.management.network
   protocol    = "tcp"
-  dst_port    = "22,23,80,443,8291" # Common management ports
+  dst_port    = "22,23,80,443,8291"
   action      = "accept"
   comment     = "Management access to network devices"
 }
@@ -43,7 +41,6 @@ resource "routeros_ip_firewall_filter" "mgmt_internet" {
   comment       = "Management to Internet (ethernet only)"
 }
 
-# Home Network Rules
 resource "routeros_ip_firewall_filter" "home_internet" {
   chain         = "forward"
   src_address   = var.network_segments.home.network
@@ -68,7 +65,6 @@ resource "routeros_ip_firewall_filter" "home_to_printer" {
   comment     = "Home to Printer"
 }
 
-# Guest Network Rules
 resource "routeros_ip_firewall_filter" "guest_internet" {
   chain         = "forward"
   src_address   = var.network_segments.guest.network
@@ -97,7 +93,6 @@ resource "routeros_ip_firewall_filter" "guest_isolation" {
   comment          = "Block Guest access to other networks except printer"
 }
 
-# IoT Network Rules
 resource "routeros_ip_firewall_filter" "iot_internet" {
   chain         = "forward"
   src_address   = var.network_segments.iot.network
@@ -117,7 +112,6 @@ resource "routeros_ip_firewall_filter" "iot_isolation" {
   comment = "Block IoT access to other networks"
 }
 
-# NAT Rules
 resource "routeros_ip_firewall_nat" "masquerade" {
   chain         = "srcnat"
   out_interface = "ether1"
@@ -125,7 +119,6 @@ resource "routeros_ip_firewall_nat" "masquerade" {
   comment       = "NAT for Internet access"
 }
 
-# Address Lists for Additional Security
 resource "routeros_ip_firewall_address_list" "management_devices" {
   list = "management_devices"
   address = join(",", [
@@ -136,7 +129,6 @@ resource "routeros_ip_firewall_address_list" "management_devices" {
   comment = "Network management devices"
 }
 
-# Layer 7 Protocol Filtering
 resource "routeros_ip_firewall_layer7_protocol" "blocked_protocols" {
   name    = "blocked-protocols"
   regexp  = "^.+(youtube|netflix|spotify).com"
@@ -151,33 +143,61 @@ resource "routeros_ip_firewall_filter" "guest_protocol_restriction" {
   comment         = "Block specific protocols for guest network"
 }
 
-# modules/firewall/main.tf
-
-# Anti-spoofing protection
 resource "routeros_ip_firewall_filter" "anti_spoofing" {
   chain        = "input"
   src_address  = "192.168.0.0/16"
-  in_interface = "ether1" # WAN interface
+  in_interface = "ether1"
   action       = "drop"
   comment      = "Anti-spoofing protection"
 }
 
-# Secure services configuration
+resource "routeros_ip_firewall_filter" "syn_flood_protection" {
+  chain = "input"
+  protocol = "tcp"
+  tcp_flags = "syn"
+  connection_state = "new"
+  connection_limit = "100,32"
+  action = "drop"
+  comment = "SYN flood protection"
+}
+
+
+output "firewall_rules" {
+  description = "Created firewall rules"
+  value = {
+    # ... existing rules ...
+    security_rules = {
+      anti_spoofing = routeros_ip_firewall_filter.anti_spoofing.id
+      block_invalid = routeros_ip_firewall_filter.block_invalid.id
+      syn_flood = routeros_ip_firewall_filter.syn_flood_protection.id
+    }
+  }
+}
+
 resource "routeros_ip_service" "secure_services" {
   for_each = toset(["www-ssl", "api-ssl"])
 
   numbers     = each.key
   address     = var.network_segments.management.network
   disabled    = false
-  certificate = "self-signed" # Replace with your certificate
+  certificate = "self-signed"
 }
 
-# Additional security measures
+
 resource "routeros_ip_firewall_filter" "block_invalid" {
   chain            = "forward"
   connection_state = "invalid"
   action           = "drop"
   comment          = "Drop invalid connections"
+}
+
+resource "routeros_ip_firewall_filter" "additional_rate_limit" {
+  chain = "input"
+  protocol = "tcp"
+  dst_port = "443,8291"
+  connection_limit = "20,32"
+  action = "drop"
+  comment = "Additional rate limiting for management interfaces"
 }
 
 resource "routeros_ip_firewall_filter" "block_bogons" {
@@ -187,7 +207,6 @@ resource "routeros_ip_firewall_filter" "block_bogons" {
   comment     = "Drop bogon addresses"
 }
 
-# Rate limiting for management access
 resource "routeros_ip_firewall_filter" "management_rate_limit" {
   chain            = "input"
   dst_address      = var.network_segments.management.network
@@ -198,7 +217,6 @@ resource "routeros_ip_firewall_filter" "management_rate_limit" {
   comment          = "Rate limit management access"
 }
 
-# Port scan detection
 resource "routeros_ip_firewall_filter" "port_scan_detection" {
   chain            = "input"
   protocol         = "tcp"
@@ -208,7 +226,18 @@ resource "routeros_ip_firewall_filter" "port_scan_detection" {
   comment          = "Drop potential port scans"
 }
 
-# Default drop rule (should be last)
+resource "routeros_system_logging" "firewall_logging" {
+  topics = "firewall"
+  action = "disk"
+  prefix = "firewall-"
+}
+
+resource "routeros_system_logging" "security_logging" {
+  topics = "error,critical"
+  action = "disk"
+  prefix = "security-"
+}
+
 resource "routeros_ip_firewall_filter" "default_drop" {
   chain   = "forward"
   action  = "drop"

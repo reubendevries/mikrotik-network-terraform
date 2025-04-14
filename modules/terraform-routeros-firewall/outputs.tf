@@ -1,5 +1,5 @@
 # modules/firewall/outputs.tf
-output "firewall_rules" {
+output "output_firewall_rules" {
   description = "Created firewall rules"
   value = {
     dmz_rules = {
@@ -23,6 +23,10 @@ output "firewall_rules" {
     iot_rules = {
       internet = routeros_ip_firewall_filter.iot_internet.id
       isolation = routeros_ip_firewall_filter.iot_isolation.id
+    }
+		security_rules = {
+      anti_spoofing = routeros_ip_firewall_filter.anti_spoofing.id
+      block_invalid = routeros_ip_firewall_filter.block_invalid.id
     }
   }
 }

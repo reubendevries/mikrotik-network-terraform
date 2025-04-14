@@ -8,6 +8,13 @@ variable "network_segments" {
     ethernet_only = bool
     purpose = string
   }))
+	
+	validation {
+    condition = alltrue([
+      for segment in var.network_segments : can(cidrhost(segment.network, 0))
+    ])
+    error_message = "All network segments must be valid CIDR blocks."
+  }
 }
 
 variable "printer_ip" {
@@ -23,6 +30,11 @@ variable "server_networks" {
 variable "wifi_networks" {
   description = "WiFi network configurations"
   type = map(string)
+
+	validation {
+    condition = length(var.wifi_networks) > 0
+    error_message = "At least one WiFi network must be defined."
+  }
 }
 
 variable "management_ports" {
