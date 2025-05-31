@@ -1,6 +1,8 @@
 # .DS_Store files
 .DS_Store
 
+# VS Code workspace
+mikrotik-network-terraform.code-workspace
 # Local .terraform directories
 **/.terraform/*
 
@@ -34,7 +36,7 @@ override.tf.json
 
 # Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
 # example: *tfplan*
-
+*tfplan*
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
