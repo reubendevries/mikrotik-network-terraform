@@ -9,7 +9,9 @@
 
 ## Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 5.94.1 |
 
 ## Modules
 
@@ -22,12 +24,13 @@ No providers.
 | <a name="module_terraform-routeros-firewall"></a> [terraform-routeros-firewall](#module\_terraform-routeros-firewall) | ./modules/terraform-routeros-firewall | n/a |
 | <a name="module_terraform-routeros-monitoring"></a> [terraform-routeros-monitoring](#module\_terraform-routeros-monitoring) | ./modules/terraform-routeros-monitoring | n/a |
 | <a name="module_terraform-routeros-network"></a> [terraform-routeros-network](#module\_terraform-routeros-network) | ./modules/terraform-routeros-network | n/a |
-| <a name="module_terraform-routeros-setup"></a> [terraform-routeros-setup](#module\_terraform-routeros-setup) | ./modules/terraform-routeros-setup | n/a |
 | <a name="module_terraform-routeros-wifi"></a> [terraform-routeros-wifi](#module\_terraform-routeros-wifi) | ./modules/terraform-routeros-wifi | n/a |
 
 ## Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/5.94.1/docs/data-sources/caller_identity) | data source |
 
 ## Inputs
 
@@ -37,6 +40,9 @@ No resources.
 | <a name="input_cap_ax_macs"></a> [cap\_ax\_macs](#input\_cap\_ax\_macs) | List of allowed MAC addresses | `list(string)` | n/a | yes |
 | <a name="input_email_address"></a> [email\_address](#input\_email\_address) | email address for monitoring alerts | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment name | `string` | `"production"` | no |
+| <a name="input_guest_wifi_password"></a> [guest\_wifi\_password](#input\_guest\_wifi\_password) | password for guest wifi | `string` | n/a | yes |
+| <a name="input_home_wifi_password"></a> [home\_wifi\_password](#input\_home\_wifi\_password) | password for home wifi | `string` | n/a | yes |
+| <a name="input_iot_wifi_password"></a> [iot\_wifi\_password](#input\_iot\_wifi\_password) | password for iot wifi | `string` | n/a | yes |
 | <a name="input_project"></a> [project](#input\_project) | The project name | `string` | n/a | yes |
 | <a name="input_routeros_host"></a> [routeros\_host](#input\_routeros\_host) | The Router OS host | `string` | n/a | yes |
 | <a name="input_routeros_password"></a> [routeros\_password](#input\_routeros\_password) | The Router OS password | `string` | n/a | yes |

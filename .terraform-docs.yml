@@ -1,6 +1,7 @@
+formatter: "markdown table"
+
 output:
   sort-by: name
-  output: table
   sections:
     show:
       - providers
@@ -10,7 +11,7 @@ diagram:
   enabled: true
   output: diagram.svg
   provider: mermaid
-  direction: TD  # Top-Down direction (can also use LR for Left-Right)
-  cluster: false  # Group resources by module
-  embed: false    # Embed diagram in markdown output
-  titles: false   # Show resource type titles
+  direction: TD # Top-Down direction (can also use LR for Left-Right)
+  cluster: false # Group resources by module
+  embed: false # Embed diagram in markdown output
+  titles: false # Show resource type titles
