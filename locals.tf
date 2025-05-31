@@ -1,6 +1,17 @@
 data "aws_caller_identity" "current" {}
 
+data "aws_secretsmanager_secret" "wifi_passwords" {
+  name = "wifi_passwords"
+}
+
+data "aws_secretsmanager_secret_version" "wifi_passwords" {
+  secret_id = data.aws_secretsmanager_secret.wifi_passwords.id
+}
+
 locals {
+
+  wifi_passwords = jsondecode(data.aws_secretsmanager_secret_version.wifi_passwords.secret_string)
+
   network_segments = {
     dmz = {
       vlan_id = 10

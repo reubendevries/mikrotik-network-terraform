@@ -1,3 +1,7 @@
+
+
+
+
 module terraform-aws-setup {
 	source = "./modules/terraform-aws-setup"
 	project = var.project
@@ -61,9 +65,9 @@ module "terraform-routeros-wifi" {
   network_segments = local.network_segments
   bridge_name     = module.terraform-routeros-network.bridge_names
   wifi_passwords  = {
-    home_wifi_password  = data.aws_secretsmanager_secret_version.home_wifi_password.secret_string
-    guest_wifi_password = data.aws_secretsmanager_secret_version.guest_wifi_password.secret_string
-    iot_wifi_password   = data.aws_secretsmanager_secret_version.iot_wifi_password.secret_string
+    home_wifi_password  = local.wifi_passwords.home_wifi_password
+    guest_wifi_password = local.wifi_passwords.guest_wifi_password
+    iot_wifi_password   = local.wifi_passwords.iot_wifi_password
   }
   cap_ax_macs    = var.cap_ax_macs
 }
@@ -74,7 +78,7 @@ module "terraform-routeros-firewall" {
   network_segments = local.network_segments
   printer_ip = "192.168.30.100"
   server_networks = ["192.168.30.0/24"]
-  wifi_networks = module.wifi.wifi_networks
+  wifi_networks = module.terraform-routeros-wifi.wifi_networks
 }
 
 
