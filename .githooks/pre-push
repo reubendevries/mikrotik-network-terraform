@@ -46,5 +46,13 @@ if command -v terraform validate &>/dev/null; then
   fi
 fi
 
+if command -v terraform-docs &>/dev/null; then
+  echo -e "${BLUE}📜 Generating Terraform documentation...${NC}"
+  if ! terraform-docs markdown . > README.md; then
+    echo -e "${RED}❌ Failed to generate Terraform documentation!${NC}"
+    exit 1
+  fi
+fi
+
 echo -e "${GREEN}✅ All Terraform checks passed! Ready to push.${NC}"
 exit 0
