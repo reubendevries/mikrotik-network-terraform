@@ -8,6 +8,10 @@ variable "network_segments" {
     ethernet_only = bool
     purpose = string
   }))
+	validation {
+    condition     = alltrue([for k, v in var.network_segments : v.vlan_id >= 1 && v.vlan_id <= 4094])
+    error_message = "VLAN IDs must be between 1 and 4094."
+  }
 }
 
 variable "telus_wan_interface" {

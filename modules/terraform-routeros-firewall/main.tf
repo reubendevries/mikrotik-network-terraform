@@ -226,6 +226,12 @@ resource "routeros_ip_firewall_filter" "port_scan_detection" {
   comment          = "Drop potential port scans"
 }
 
+resource "routeros_system_logging" "firewall_log" {
+  action    = "disk"
+  topics    = "firewall,info,!debug"
+  prefix    = "[FIREWALL]"
+}
+
 resource "routeros_system_logging" "firewall_logging" {
   topics = "firewall"
   action = "disk"

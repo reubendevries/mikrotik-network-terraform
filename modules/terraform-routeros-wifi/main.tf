@@ -15,34 +15,27 @@ resource "routeros_caps_manager_channel" "wifi_channels" {
   save             = true
 }
 
-resource "routeros_caps_manager_security" "wifi_security" {
-  for_each = {
-    home_wifi_password  = local.wifi_passwords["home_wifi_password"]
-    guest_wifi_password = local.wifi_passwords["guest_wifi_password"]
-    iot_wifi_password   = local.wifi_passwords["iot_wifi_password"]
-  }
-  
-  name                 = "${each.key}-security"
-  authentication_types = "wpa2-psk"
-  encryption          = "aes-ccm"
-  passphrase          = each.value
-  save                = true
-}
-
-resource "routeros_caps_manager_configuration" "wifi_networks" {
+# Create security profiles for each network
+resource "routeros_interface_wireless_security" "wifi_security" {
   for_each = local.wifi_networks
-  
-  name              = "${each.key}-wifi"
-  channel           = routeros_caps_manager_channel.wifi_channels.name
-  security          = routeros_caps_manager_security[each.key].name
-  ssid              = local.security_configs[each.key].ssid
-  vlan_id          = each.value.vlan_id
-  vlan_mode        = "use-tag"
-  country          = "canada"
-  installation     = "indoor"
-  rx_chains        = 4
-  tx_chains        = 4
-  save             = true
+
+  name              = "security-${each.key}"
+  authentication-types = ["wpa2-psk"]
+  wpa2-pre-shared-key = local.wifi_passwords[local.security_configs[each.key].password_key]
+  mode               = "dynamic-keys"
+}
+# Create WiFi configurations for each network
+resource "routeros_interface_wireless" "wifi_networks" {
+  for_each = local.wifi_networks
+
+  name           = "wifi-${each.key}"
+  mode          = "ap-bridge"
+  ssid          = local.security_configs[each.key].ssid
+  frequency     = "2412-2472"
+  band          = "2ghz-b/g/n"
+  channel_width = "20/40mhz-Ce"
+  security_profile = "security-${each.key}"
+  disabled      = false
 }
 
 resource "routeros_caps_manager_access_list" "cap_ax_devices" {

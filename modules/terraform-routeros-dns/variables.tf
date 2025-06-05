@@ -1,26 +1,26 @@
 variable "network_devices" {
   description = "Map of network devices and their DNS configurations"
   type = map(object({
-    ip          = string
+    ip          = list(string)
     name        = string
     comment     = string
     is_dns_server = bool
   }))
   default = {
     gateway = {
-      ip            = "192.168.20.1"
+      ip            = ["192.168.20.1"]
       name          = "gateway"
       comment       = "Gateway Router CRS326"
       is_dns_server = true
     }
     core = {
-      ip            = "192.168.20.2"
+      ip            = ["192.168.20.2"]
       name          = "core"
       comment       = "Core Router CCR2004"
       is_dns_server = false
     }
     access = {
-      ip            = "192.168.20.3"
+      ip            = ["192.168.20.3"]
       name          = "access"
       comment       = "Access Switch CRS328"
       is_dns_server = false

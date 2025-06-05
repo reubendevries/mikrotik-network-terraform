@@ -30,7 +30,6 @@ resource "routeros_system_script" "backup_script" {
   for_each = var.routers
   
   name = "backup-${each.value.name}"
-  owner = "admin"
   policy = ["ftp","read","write","policy","password"]
   source = templatefile("${path.module}/templates/backup-script.tpl", {
     router_name = each.value.name
@@ -50,24 +49,12 @@ resource "routeros_system_scheduler" "backup_scheduler" {
   policy     = ["ftp","read","write","policy","password"]
 }
 
-resource "routeros_system_script" "export_config" {
-  for_each = var.routers
-  
-  name = "export-config-${each.value.name}"
-  owner = "admin"
-  policy = ["ftp","read","write","policy","password"]
-  source = templatefile("${path.module}/templates/export-config.tpl", {
-    router_name = each.value.name
-  })
-}
-
 resource "routeros_system_script" "pre_backup_check" {
   for_each = var.routers
   
   name = "pre-backup-check-${each.value.name}"
-  owner = "admin"
   policy = ["ftp","read","write","policy","password"]
-  source = templatefile("${path.module}/templates/pre-backup-check.tpl", {
+  source = templatefile("${path.module}/templates/pre-backup-script.tpl", {
     router_name = each.value.name
   })
 }
@@ -76,20 +63,8 @@ resource "routeros_system_script" "verify_backup" {
   for_each = var.routers
   
   name = "verify-backup-${each.value.name}"
-  owner = "admin"
   policy = ["ftp","read","write","policy","password"]
   source = templatefile("${path.module}/templates/verify-backup.tpl", {
-    router_name = each.value.name
-  })
-}
-
-resource "routeros_system_script" "backup_notification" {
-  for_each = var.routers
-  
-  name = "backup-notification-${each.value.name}"
-  owner = "admin"
-  policy = ["ftp","read","write","policy","password"]
-  source = templatefile("${path.module}/templates/backup-notification.tpl", {
     router_name = each.value.name
   })
 }

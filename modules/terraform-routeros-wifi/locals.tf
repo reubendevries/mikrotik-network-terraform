@@ -1,6 +1,6 @@
 # modules/wifi/locals.tf
 data "aws_secretsmanager_secret" "wifi_passwords" {
-  name = "mikrotik/devries-family-network/wifi_passwords"
+  name = "mikrotik/devries-family-network/wifi-passwords"
 }
 
 data "aws_secretsmanager_secret_version" "wifi_passwords" {
@@ -15,9 +15,9 @@ locals {
   }
   
   security_configs = {
-    home  = { ssid = "Home-Network", password_key = "home" }
-    guest = { ssid = "Guest-Network", password_key = "guest" }
-    iot   = { ssid = "IoT-Network", password_key = "iot" }
+    home  = { ssid = "home", password_key = "home_wifi_password" }
+    guest = { ssid = "guest", password_key = "guest_wifi_password" }
+    iot   = { ssid = "guest", password_key = "iot_wifi_password" }
   }
 
   wifi_passwords = jsondecode(data.aws_secretsmanager_secret_version.wifi_passwords.secret_string)

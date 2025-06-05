@@ -128,6 +128,9 @@ resource "routeros_ip_dhcp_server" "vlan_dhcp" {
   interface     = routeros_interface_vlan.ccr2004_vlans[each.key].name
   address_pool  = routeros_ip_pool.vlan_pools[each.key].name
   lease_time    = "8h"
+  
+  
+  lease_script = ":log info \"DHCP lease for $leaseActIP on $interface\""
 }
 
 # DHCP Network configurations
